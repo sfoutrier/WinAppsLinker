@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -57,7 +58,24 @@ namespace WinAppsLinker
                 imageList.Images.Add(appUserModelID, app.Thumbnail.Bitmap);
                 var imageIndex = imageList.Images.Count - 1;
 
-                applications.Add(new Application(name, appUserModelID, null, imageIndex));
+                var filePath = @"thumbs\" + Regex.Replace(name, @"[^\w]", "_") + ".png";
+                try
+                {
+                    Directory.CreateDirectory(@"thumbs");
+                    app.Thumbnail.Bitmap.Save(filePath);
+
+                    if (File.Exists(filePath))
+                        filePath = Path.GetFullPath(filePath);
+                    else
+                        filePath = null;
+                }
+                catch
+                {
+                    // do nothing yet, just erase the path for the image we haven’t created
+                    filePath = null;
+                }
+
+                applications.Add(new Application(name, appUserModelID, filePath, imageIndex));
             }
 
             _applications = applications;
@@ -94,6 +112,13 @@ namespace WinAppsLinker
 
             var subNode = node.Nodes.Add("id", id);
             subNode.ImageIndex = 0;
+
+            if (!string.IsNullOrEmpty(app.ImagePath))
+            {
+                subNode = node.Nodes.Add("img", app.ImagePath);
+                subNode.ImageIndex = 0;
+            }
+
             node.Collapse();
 
             return node;
