@@ -1,36 +1,22 @@
 ﻿using Microsoft.WindowsAPICodePack.Shell;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Windows.Media;
 
 namespace WinAppsLinker
 {
     public partial class MainForm : Form
     {
-        private class Application
-        {
-            public string ApplicationName { get; }
-            public string ApplicationId { get; }
-            public string ImagePath { get; }
-            public int ImageIndex { get; }
-
-            public Application(string name, string id, string imagePath, int imageIndex)
-            {
-                ApplicationName = name;
-                ApplicationId = id;
-                ImagePath = imagePath;
-                ImageIndex = imageIndex;
-            }
-        }
+        private record Application(
+            string ApplicationName,
+            string ApplicationId,
+            string ImagePath,
+            int ImageIndex);
 
         private IReadOnlyList<Application> _applications;
 
